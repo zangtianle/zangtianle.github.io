@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-09T11:06:38.448Z</updated>
+  <updated>2023-03-09T13:46:59.154Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CQUPT Sre 2023 winter assessment re1</title>
+    <link href="http://example.com/2023/03/09/CQUPT-Sre-2023-winter-assessment-re1/"/>
+    <id>http://example.com/2023/03/09/CQUPT-Sre-2023-winter-assessment-re1/</id>
+    <published>2023-03-09T13:09:52.000Z</published>
+    <updated>2023-03-09T13:46:59.154Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="re1"><a href="#re1" class="headerlink" title="re1"></a>re1</h2><p>我先查壳发现是32位，无壳。</p><p><img src="/pic/202303091.jpg" alt="查壳"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;re1&quot;&gt;&lt;a href=&quot;#re1&quot; class=&quot;headerlink&quot; title=&quot;re1&quot;&gt;&lt;/a&gt;re1&lt;/h2&gt;&lt;p&gt;我先查壳发现是32位，无壳。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/pic/202303091.jpg&quot; alt=&quot;查壳&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+    <category term="学习记录" scheme="http://example.com/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+    
+  </entry>
   
   <entry>
     <title>SB早操</title>
