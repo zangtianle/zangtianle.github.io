@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-10T15:00:05.113Z</updated>
+  <updated>2023-03-10T15:25:24.162Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>buuctf_reverse_wp</title>
+    <link href="http://example.com/2023/03/10/buuctf-reverse-wp/"/>
+    <id>http://example.com/2023/03/10/buuctf-reverse-wp/</id>
+    <published>2023-03-10T15:04:12.000Z</published>
+    <updated>2023-03-10T15:25:24.162Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="easyre"><a href="#easyre" class="headerlink" title="easyre"></a>easyre</h1><p>可以说是最入门入门入门的题了！</p><p>先把文件拖进die，PE64文件，拖进ida，一进去就看到了flag</p><p><img src="/pic/202303101.png" alt="flag"></p><p>flag{this_Is_a_EaSyRe}</p><h1 id="reverse-1"><a href="#reverse-1" class="headerlink" title="reverse_1"></a>reverse_1</h1><p>下载好文件之后拖进die，是PE64文件，拖进ida</p><p>一进去可以看到{hello_world}，但拿去buu发现不对，于是查看字符串，跟进</p><p><img src="/pic/202303103.png" alt="跟进"></p><p>可以看到只要与str2相同就行，所以看懂上面对str2进行的操作，把’o’换成’0’即可</p><p><img src="/pic/202303102.png" alt="进行操作"></p><p>flag{hell0_w0rld}</p><h1 id="reserve-2"><a href="#reserve-2" class="headerlink" title="reserve_2"></a>reserve_2</h1><p>拖进die，看到是elf64文件，拖进ida找到main函数，反编译</p><p><img src="/pic/202303104.png" alt="lookfor"></p><p>点进flag可以看到{hacking_for_fun}</p><p><img src="/pic/202303105.png" alt="cheatflag"></p><p>但对flag进行了操作，所以写个脚本</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flag=<span class="string">&quot;&#123;hacking_for_fun&#125;&quot;</span></span><br><span class="line">flag1=<span class="built_in">list</span>(flag)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(flag)):</span><br><span class="line">    <span class="keyword">if</span>(flag[i]==<span class="string">&#x27;i&#x27;</span>)<span class="keyword">or</span>(flag[i]==<span class="string">&#x27;r&#x27;</span>):</span><br><span class="line">        flag1[i]=<span class="string">&#x27;1&#x27;</span></span><br><span class="line">flag=<span class="string">&#x27;&#x27;</span>.join(flag1)</span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure><p>flag{hack1ng_fo1_fun}</p><h1 id="内涵的软件"><a href="#内涵的软件" class="headerlink" title="内涵的软件"></a>内涵的软件</h1><p>下载下来文件，拖进ide，是PE32文件，拖进ida</p><p>打开看到</p><p><img src="/pic/202303106.png" alt="lookfor"></p><p>{49d3c93df25caad81232130f3d2ebfad}即为flag </p><p>flag{49d3c93df25caad81232130f3d2ebfad}</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;easyre&quot;&gt;&lt;a href=&quot;#easyre&quot; class=&quot;headerlink&quot; title=&quot;easyre&quot;&gt;&lt;/a&gt;easyre&lt;/h1&gt;&lt;p&gt;可以说是最入门入门入门的题了！&lt;/p&gt;
+&lt;p&gt;先把文件拖进die，PE64文件，拖进ida，一进去就看到了f</summary>
+      
+    
+    
+    
+    
+    <category term="学习笔记" scheme="http://example.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Linux基本语法</title>
