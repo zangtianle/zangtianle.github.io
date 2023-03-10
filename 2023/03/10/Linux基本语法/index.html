@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="MaoMao"><meta name="renderer" content="webkit"><meta name="copyright" content="MaoMao"><meta name="keywords" content="MaoMao's Blog"><meta name="description" content="A cat's blog"><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Linux基本语法 · MaoMao's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="MaoMao's Blog" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">MaoMao</div><div class="profile-signature">cat???</div><div class="friends"><div>FRIENDS</div><span><a href="eutop1a.github.io" target="_black">friendA</a></span><span><a href="http://tsingshui.me/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">MaoMao's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">Linux基本语法</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2023-03-10</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="学习笔记"> 学习笔记</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="进入终端：点击鼠标右键再点击Open-Terminals"><a href="#进入终端：点击鼠标右键再点击Open-Terminals" class="headerlink" title="进入终端：点击鼠标右键再点击Open Terminals"></a>进入终端：点击鼠标右键再点击Open Terminals</h1><p>ls：查看当前目录下的文件和文件夹   即list的缩写，列出文件和文件夹  注意：在Linux系统下，在文件名或者文件夹名前加点号(如.config)会隐藏该文件，这时候我们可以使用ls -a看到所有文件，包括被隐藏的文件或文件夹）</p>
+<p>cd：切换文件路径，进入某个文件夹  即change directory，改变工作目录  （cd ..回到上一级目录）</p>
+<p>pwd：查看当前工作目录  即Print Working Directory的缩写</p>
+<p>通过在键盘点击上下可以在命令行中显示你曾经输入过的指令（在命令行中输入history查看最近输入的指令）</p>
+<p>一般来说虚拟机里复制键是shift+ctrl+c，粘贴键是shift+ctrl+v</p>
+<p>对某个文件输入命令时按下tab键可以补全文件名</p>
+<p>mkdir：新建文件夹  make directory的缩写</p>
+<p>touch: 创建文本文件</p>
+<p>rm：删除指定文件  remove的缩写</p>
+<p>#rm -r：删除指定文件夹</p>
+<p>##rm -rf &#x2F;*：删库跑路(很可能跑不掉)</p>
+<p> cp：复制 cp &lt;文件路径&gt; &lt;目标路径&gt;</p>
+<p>mv：移动文件或修改文件名（根据第二个参数决定是移动文件还是修改文件名）</p>
+<p>mv yyz.txt 233.txt    #重命名yyz.txt为 233.txt</p>
+<p>mv 233.txt ..        #将文件 a.txt移动到上一级目录中</p>
+<p>tar -zxvf 文件名   解压命令，相信如果同学们按照我的教程装过vm tool的话对它已经很熟悉了。</p>
+<p>clear  顾名思义，清屏命令</p>
+<p>cmatrix：伪装大haker</p>
+<h1 id="vim一般有6种工作模式"><a href="#vim一般有6种工作模式" class="headerlink" title="vim一般有6种工作模式"></a>vim一般有6种工作模式</h1><h5 id="普通模式：使用vim打开一个文件时默认模式，也叫命令模式，允许用户通过各种命令浏览代码、滚屏等操作。"><a href="#普通模式：使用vim打开一个文件时默认模式，也叫命令模式，允许用户通过各种命令浏览代码、滚屏等操作。" class="headerlink" title="普通模式：使用vim打开一个文件时默认模式，也叫命令模式，允许用户通过各种命令浏览代码、滚屏等操作。"></a>普通模式：使用vim打开一个文件时默认模式，也叫命令模式，允许用户通过各种命令浏览代码、滚屏等操作。</h5><h5 id="插入模式：也可以叫做编辑模式，在普通模式下敲击-i-、a-或-o-就进入插入模式，允许用户通过键盘输入、编辑。"><a href="#插入模式：也可以叫做编辑模式，在普通模式下敲击-i-、a-或-o-就进入插入模式，允许用户通过键盘输入、编辑。" class="headerlink" title="插入模式：也可以叫做编辑模式，在普通模式下敲击 i 、a 或 o 就进入插入模式，允许用户通过键盘输入、编辑。"></a>插入模式：也可以叫做编辑模式，在普通模式下敲击 i 、a 或 o 就进入插入模式，允许用户通过键盘输入、编辑。</h5><h5 id="命令行模式：在普通模式下，先输入冒号-，接着输入命令，就可以通过配置命令对vim进行配置了，如改变颜色主题、显示行号等，这些配置命令也可以保存到-x2F-etc-x2F-vim-x2F-vimrc配置文件中，每次打开默认配置执行。"><a href="#命令行模式：在普通模式下，先输入冒号-，接着输入命令，就可以通过配置命令对vim进行配置了，如改变颜色主题、显示行号等，这些配置命令也可以保存到-x2F-etc-x2F-vim-x2F-vimrc配置文件中，每次打开默认配置执行。" class="headerlink" title="命令行模式：在普通模式下，先输入冒号:，接着输入命令，就可以通过配置命令对vim进行配置了，如改变颜色主题、显示行号等，这些配置命令也可以保存到&#x2F;etc&#x2F;vim&#x2F;vimrc配置文件中，每次打开默认配置执行。"></a>命令行模式：在普通模式下，先输入冒号:，接着输入命令，就可以通过配置命令对vim进行配置了，如改变颜色主题、显示行号等，这些配置命令也可以保存到&#x2F;etc&#x2F;vim&#x2F;vimrc配置文件中，每次打开默认配置执行。</h5><h5 id="可视化模式：在普通模式下敲击前盘上的-v-键，就进入可视化模式，然后移动光标就可以选中一块文本，常用来完成文本的复制、粘贴、删除等操作。"><a href="#可视化模式：在普通模式下敲击前盘上的-v-键，就进入可视化模式，然后移动光标就可以选中一块文本，常用来完成文本的复制、粘贴、删除等操作。" class="headerlink" title="可视化模式：在普通模式下敲击前盘上的 v 键，就进入可视化模式，然后移动光标就可以选中一块文本，常用来完成文本的复制、粘贴、删除等操作。"></a>可视化模式：在普通模式下敲击前盘上的 v 键，就进入可视化模式，然后移动光标就可以选中一块文本，常用来完成文本的复制、粘贴、删除等操作。</h5><h5 id="替换模式：如果我们想修改某个字符，不需要先进入插入模式，删除，然后再输入新的字符，直接在普通模式下，敲击R键就可以直接替换。"><a href="#替换模式：如果我们想修改某个字符，不需要先进入插入模式，删除，然后再输入新的字符，直接在普通模式下，敲击R键就可以直接替换。" class="headerlink" title="替换模式：如果我们想修改某个字符，不需要先进入插入模式，删除，然后再输入新的字符，直接在普通模式下，敲击R键就可以直接替换。"></a>替换模式：如果我们想修改某个字符，不需要先进入插入模式，删除，然后再输入新的字符，直接在普通模式下，敲击R键就可以直接替换。</h5><h5 id="EX模式：类似于命令行模式，可以一次运行多个命令"><a href="#EX模式：类似于命令行模式，可以一次运行多个命令" class="headerlink" title="EX模式：类似于命令行模式，可以一次运行多个命令"></a>EX模式：类似于命令行模式，可以一次运行多个命令</h5><h5 id="vim的各种工作模式可以通过不同的键进行切换，用户统一使用ESC键返回到普通模式。"><a href="#vim的各种工作模式可以通过不同的键进行切换，用户统一使用ESC键返回到普通模式。" class="headerlink" title="vim的各种工作模式可以通过不同的键进行切换，用户统一使用ESC键返回到普通模式。"></a>vim的各种工作模式可以通过不同的键进行切换，用户统一使用ESC键返回到普通模式。</h5><h1 id="Man-Page-常用操作"><a href="#Man-Page-常用操作" class="headerlink" title="Man Page 常用操作"></a>Man Page 常用操作</h1><h4 id="Man常用的快捷键："><a href="#Man常用的快捷键：" class="headerlink" title="Man常用的快捷键："></a>Man常用的快捷键：</h4><p>•q 退出</p>
+<p>•Enter 按行下翻</p>
+<p>•Space|f 按页下翻</p>
+<p>•b 上翻一页</p>
+<p>•h 查看帮助文档</p>
+<h4 id="Man常用的命令："><a href="#Man常用的命令：" class="headerlink" title="Man常用的命令："></a>Man常用的命令：</h4><p>•g [n] 跳转到第一行|跳转到第n行</p>
+<p>•G 跳转到最后一行</p>
+<p>•&#x2F;搜索内容：</p>
+<p>•n 跳转到下一个匹配的搜索</p>
+<p>•N 跳转到上一个匹配的搜索</p>
+<h3 id="Man-page的分类"><a href="#Man-page的分类" class="headerlink" title="Man page的分类"></a>Man page的分类</h3><h4 id="man总共有9种分类"><a href="#man总共有9种分类" class="headerlink" title="man总共有9种分类"></a>man总共有9种分类</h4><h5 id="越小的分类其查找时默认优先度越高"><a href="#越小的分类其查找时默认优先度越高" class="headerlink" title="越小的分类其查找时默认优先度越高"></a>越小的分类其查找时默认优先度越高</h5><p>1.可执行程序或shell命令</p>
+<p>2.系统调用(内核提供的函数)   </p>
+<p>3.库调用（库提供的函数）</p>
+<p>4.特殊文件（通常位于&#x2F;dev）</p>
+<p>5.文件格式和约定，如&#x2F;etc&#x2F;passwd</p>
+<p>6.游戏</p>
+<p>7.杂项（包括宏包和规范如man(7))</p>
+<p>8.系统管理命令，只针对root用户</p>
+<p>9.内核例程</p>
+<h5 id="有时存在属于不同种类但是同名的情况，如manpath命令即是一个文件格式又是一个执行命令"><a href="#有时存在属于不同种类但是同名的情况，如manpath命令即是一个文件格式又是一个执行命令" class="headerlink" title="有时存在属于不同种类但是同名的情况，如manpath命令即是一个文件格式又是一个执行命令"></a>有时存在属于不同种类但是同名的情况，如manpath命令即是一个文件格式又是一个执行命令</h5><p>解决方法：</p>
+<p> man manpath.1</p>
+<p> man manpath.5</p>
+<p>即 man xxxx.index</p>
+<h1 id="Linux根目录"><a href="#Linux根目录" class="headerlink" title="Linux根目录"></a>Linux根目录</h1><h5 id="x2F-bin-此目录存放所有用户的命令"><a href="#x2F-bin-此目录存放所有用户的命令" class="headerlink" title="&#x2F;bin   此目录存放所有用户的命令"></a>&#x2F;bin   此目录存放所有用户的命令</h5><h5 id="x2F-boot-Linux内核及引导系统程序所需的文件"><a href="#x2F-boot-Linux内核及引导系统程序所需的文件" class="headerlink" title="&#x2F;boot   Linux内核及引导系统程序所需的文件"></a>&#x2F;boot   Linux内核及引导系统程序所需的文件</h5><h5 id="x2F-dev-所有设备文件的目录（如声卡、磁盘、光驱）"><a href="#x2F-dev-所有设备文件的目录（如声卡、磁盘、光驱）" class="headerlink" title="&#x2F;dev   所有设备文件的目录（如声卡、磁盘、光驱）"></a>&#x2F;dev   所有设备文件的目录（如声卡、磁盘、光驱）</h5><p>该目录用于访问设备，其中不仅包括了计算机的真实设备，如硬盘、网卡等设备，同时也有一些有趣的伪设备</p>
+<p>n&#x2F;dev&#x2F;null        “黑洞”，写入的一切数据都会被丢弃</p>
+<p>n&#x2F;dev&#x2F;random     真随机数生成器，可读取随机数据流，随机度高但是慢</p>
+<p>n&#x2F;dev&#x2F;urandom    伪随机数，同上，但是随机度低但速度快</p>
+<p>n&#x2F;dev&#x2F;zero        “零”生成器，可以取到连续不断的0值</p>
+<p>n&#x2F;dev&#x2F;tty  指向当前终端</p>
+<h5 id="x2F-etc-主要存放了系统配置方面的文件"><a href="#x2F-etc-主要存放了系统配置方面的文件" class="headerlink" title="&#x2F;etc   主要存放了系统配置方面的文件"></a>&#x2F;etc   主要存放了系统配置方面的文件</h5><h5 id="x2F-home-各个用户的家目录"><a href="#x2F-home-各个用户的家目录" class="headerlink" title="&#x2F;home   各个用户的家目录"></a>&#x2F;home   各个用户的家目录</h5><h5 id="x2F-lib-库文件存放目录"><a href="#x2F-lib-库文件存放目录" class="headerlink" title="&#x2F;lib   库文件存放目录"></a>&#x2F;lib   库文件存放目录</h5><h5 id="x2F-lost-found-当系统意外崩溃或意外关机时-用于修复的文件碎片"><a href="#x2F-lost-found-当系统意外崩溃或意外关机时-用于修复的文件碎片" class="headerlink" title="&#x2F;lost+found   当系统意外崩溃或意外关机时,用于修复的文件碎片"></a>&#x2F;lost+found   当系统意外崩溃或意外关机时,用于修复的文件碎片</h5><h5 id="x2F-mnt-用于临时挂载存储设备"><a href="#x2F-mnt-用于临时挂载存储设备" class="headerlink" title="&#x2F;mnt   用于临时挂载存储设备"></a>&#x2F;mnt   用于临时挂载存储设备</h5><h5 id="x2F-var-存放内容常变动的文件目录"><a href="#x2F-var-存放内容常变动的文件目录" class="headerlink" title="&#x2F;var   存放内容常变动的文件目录"></a>&#x2F;var   存放内容常变动的文件目录</h5><h5 id="x2F-opt-自定义软件安装存放目录"><a href="#x2F-opt-自定义软件安装存放目录" class="headerlink" title="&#x2F;opt   自定义软件安装存放目录"></a>&#x2F;opt   自定义软件安装存放目录</h5><h5 id="x2F-proc-进程及内核信息存放目录。"><a href="#x2F-proc-进程及内核信息存放目录。" class="headerlink" title="&#x2F;proc   进程及内核信息存放目录。"></a>&#x2F;proc   进程及内核信息存放目录。</h5><p>该目录下一个个进程以其pid作为文件夹名放在该目录下，还有一些设备参数的读取</p>
+<p>&#x2F;proc&#x2F;cpuinfo 本机的 CPU 的相关信息，包含频率、类型与运算功能等</p>
+<p>&#x2F;proc&#x2F;devices 这个文件记录了系统各个主要设备的主要设备代号，与 mknod 有关</p>
+<p>&#x2F;proc&#x2F;filesystems 目前系统已经载入的文件系统</p>
+<p>&#x2F;proc&#x2F;version 核心的版本，就是用 uname -a 显示的内容啦！</p>
+<h5 id="x2F-root-root用户家目录"><a href="#x2F-root-root用户家目录" class="headerlink" title="&#x2F;root   root用户家目录"></a>&#x2F;root   root用户家目录</h5><h5 id="x2F-tmp-临时文件目录"><a href="#x2F-tmp-临时文件目录" class="headerlink" title="&#x2F;tmp   临时文件目录"></a>&#x2F;tmp   临时文件目录</h5><h5 id="x2F-usr-系统存放程序的目录"><a href="#x2F-usr-系统存放程序的目录" class="headerlink" title="&#x2F;usr   系统存放程序的目录"></a>&#x2F;usr   系统存放程序的目录</h5><h5 id="x2F-sbin-给root用户使用的命令"><a href="#x2F-sbin-给root用户使用的命令" class="headerlink" title="&#x2F;sbin   给root用户使用的命令"></a>&#x2F;sbin   给root用户使用的命令</h5><h5 id="x2F-sys-系统内核参数"><a href="#x2F-sys-系统内核参数" class="headerlink" title="&#x2F;sys   系统内核参数"></a>&#x2F;sys   系统内核参数</h5><h1 id="Linux树形结构的文件系统——路径"><a href="#Linux树形结构的文件系统——路径" class="headerlink" title="Linux树形结构的文件系统——路径"></a>Linux树形结构的文件系统——路径</h1><p>为了方便地访问文件夹，我们使用一个字符串来标识对文件的访问，这个字符串就是路径。</p>
+<p>与windows用\分割路径的方式不同，Linux下采用&#x2F;分割不同的文件夹</p>
+<h1 id="Linux文件系统——树形结构"><a href="#Linux文件系统——树形结构" class="headerlink" title="Linux文件系统——树形结构"></a>Linux文件系统——树形结构</h1><p>•不同于windows系统采用盘符的机制来描述文件系统，Linux和macOS这类Unix系统采用挂载点的方式描述文件</p>
+<p>•操作路径系统，通常使用树形抽象。</p>
+<p>•只不过Linux这一棵路径树，只有一个根节点&#x2F;，</p>
+<p>根文件系统就挂载在这根目录下面&#x2F;。</p>
+<p>•既然没有盘符系统，那么怎么添加多个文件系</p>
+<p>统呢？不同的文件系统，以文件夹的形式，挂载</p>
+<p>在已有文件系统的某一个文件夹下面。</p>
+<h1 id="Linux-链接"><a href="#Linux-链接" class="headerlink" title="Linux 链接"></a>Linux 链接</h1><p>•在Linux系统中有一种特殊的文件类型叫链接。</p>
+<h3 id="•链接分为两种："><a href="#•链接分为两种：" class="headerlink" title="•链接分为两种："></a>•链接分为两种：</h3><h4 id="硬链接："><a href="#硬链接：" class="headerlink" title="硬链接："></a>硬链接：</h4><p>硬链接和原文件必须处于同一个文件系统，删除源文件对硬链接不会有影响，硬链接和原链接实际上是对同一份数据的两个引用，同时无法建立文件夹的硬链接。</p>
+<h4 id="软链接"><a href="#软链接" class="headerlink" title="软链接"></a>软链接</h4><p>又叫符号链接，它类似快捷方式，指向一个路径，因此可以跨文件系统建立，当原文件被删除时，软链接也无法取得数据</p>
+<p><strong>ln [-s]</strong> <strong>原文件路径 目标文件路径</strong>  </p>
+<h3 id="ls-l"><a href="#ls-l" class="headerlink" title="# ls -l"></a><strong># ls -l</strong></h3><p>drwxrw-r-x <strong>2</strong> roo root 0 Sept 1 16:09 redrock   <strong>硬链接</strong>|<strong>文件数量</strong></p>
+<p>drwxrw-r-x 2 root root <strong>5</strong> Sept 1 16:09 redrock   <strong>文件大小</strong></p>
+<p>dwxrw-r-x 2 root root 5 <strong>Sept 1 16:09</strong> redrock   <strong>最后修改时间</strong></p>
+<p>drwxrw-r-x 2 <strong>root root</strong> 5 Sept 1 16:09 redrock   <strong>文件所属用户 文件所属用户组</strong></p>
+<p><strong>d</strong>rwxrw-r-x 2 root root 5 Sept 1 16:09 redrock   <strong>类型标志位</strong>  <strong>d&#x2F;-&#x2F;s</strong>  代表文件夹、普通文件、软链接</p>
+<p>d<strong>rwx</strong>rw-r-x 2 root root 5 Sept 1 16:09 redrock  <strong>所有者权限</strong></p>
+<p>drwx**rw-**r-x 2 root root 5 Sept 1 16:09 redrock  <strong>所有组权限</strong></p>
+<p>drwxrw-<strong>r-x</strong> 2 root root 5 Sept 1 16:09 redrock   <strong>其他人权限</strong></p>
+<h2 id="Linux文件权限管理"><a href="#Linux文件权限管理" class="headerlink" title="Linux文件权限管理"></a>Linux文件权限管理</h2><p>•对于一个文件夹来说，如果一个用户没有文件夹的执行权限(x)，则改用无法进入该文件夹</p>
+<p>•使用命令<strong>chmod</strong>改变文件权限 </p>
+<p>chmod  u+x  redrock</p>
+<p>chmod  766  redrock</p>
+<p>读取 r    4     二进制：100</p>
+<p>写入 w   2     二进制：010</p>
+<p>执行 x    1     二进制：001</p>
+<p>•使用命令<strong>chown</strong>可以更改文件所属用户或同时修改所属用户和所属组</p>
+<p>  chown root redrock   更改文件redrock的所属用户为root</p>
+<p>  chown root:redrocker redrock  更改文件redrock的所属用户为root所属组为redrocker</p>
+<p>•使用命令<strong>chgrp</strong>，可以单独修改文件所属组</p>
+<p>   chgrp redrocker redrock    更改文件redrock的所属用户组为toot   </p>
+<h1 id="账户管理——添加用户"><a href="#账户管理——添加用户" class="headerlink" title="账户管理——添加用户"></a>账户管理——添加用户</h1><h3 id="•添加新的用户账号使用useradd命令，其语法如下："><a href="#•添加新的用户账号使用useradd命令，其语法如下：" class="headerlink" title="•添加新的用户账号使用useradd命令，其语法如下："></a>•添加新的用户账号使用useradd命令，其语法如下：</h3><p>-c comment 指定一段注释性描述。</p>
+<p>-d 目录 指定用户主目录，如果此目录不存在，则同时使用-m选项，可以创建主目录。</p>
+<p>-g 用户组 指定用户所属的用户组。</p>
+<p>-G 用户组，用户组 指定用户所属的附加组。</p>
+<p>-s Shell文件 指定用户的登录Shell。</p>
+<p>-u 用户号 指定用户的用户号，如果同时有-o选项，则可以重复使用其他用户的标识号。</p>
+<h1 id="账户管理—删除和修改"><a href="#账户管理—删除和修改" class="headerlink" title="账户管理—删除和修改"></a>账户管理—删除和修改</h1><h3 id="1-删除帐号"><a href="#1-删除帐号" class="headerlink" title="1.删除帐号"></a>1.删除帐号</h3><p>•  如果一个用户的账号不再使用，可以从系统中删除。删除用户账号就是要将&#x2F;etc&#x2F;passwd等系统文件中的该用户记录删除，必要时还删除用户的主目录。</p>
+<p>•删除一个已有的用户账号使用userdel命令，其格式如下：</p>
+<p>•userdel 选项 用户名</p>
+<p>•常用的选项是 -r，它的作用是把用户的主目录一起删除。</p>
+<h3 id="2-修改帐号"><a href="#2-修改帐号" class="headerlink" title="2. 修改帐号"></a>2. 修改帐号</h3><p>•修改用户账号就是根据实际情况更改用户的有关属性，如用户号、主目录、用户组、登录Shell等。修改已有用户的信息使用usermod命令，其格式如下：</p>
+<p>•usermod 选项 用户名</p>
+<p>•常用的选项包括-c, -d, -m, -g, -G, -s, -u以及-o等，这些选项的意义与useradd命令中的选项一样，可以为用户指定新的资源值。</p>
+<p>•另外，有些系统可以使用选项：-l 新用户名</p>
+<p>1、&#x2F;etc&#x2F;passwd文件是用户管理工作涉及的最重要的一个文件。Linux系统中的每个用户都在&#x2F;etc&#x2F;passwd文件中有一个对应的记录行，它记录了这个用户的一些基本属性。这个文件对所有用户都是可读的。</p>
+<p>•文件具体含义：<em>用户名</em>*:<strong>口令</strong>:<strong>用户标识号</strong>(UID):<strong>组标识号</strong>(GID):<strong>注释性描述</strong>:<strong>主目录</strong>:<strong>登录</strong>Shell*</p>
+<p>•其中口令字段，由于采用了shadow技术，把真正的加密后的用户口令字存放到&#x2F;etc&#x2F;shadow文件中，而在&#x2F;etc&#x2F;passwd文件的口令字段中只存放一个特殊的字符“x”</p>
+<p>2、用户组的所有信息都存放在&#x2F;etc&#x2F;group文件中。</p>
+<p>•文件具体含义：<em>组名</em>*:<strong>口令</strong>:<strong>组标识号</strong>:*<em>组内用户列表</em></p>
+<h1 id="账户管理—删除和修改-1"><a href="#账户管理—删除和修改-1" class="headerlink" title="账户管理—删除和修改"></a>账户管理—删除和修改</h1><h3 id="增加一个新的用户组使用groupadd命令。其格式如下："><a href="#增加一个新的用户组使用groupadd命令。其格式如下：" class="headerlink" title="增加一个新的用户组使用groupadd命令。其格式如下："></a>增加一个新的用户组使用groupadd命令。其格式如下：</h3><p>•groupadd 选项 用户组</p>
+<p>•可以使用的选项有：</p>
+<p>•-g GID 指定新用户组的组标识号（GID）。</p>
+<p>•-o 一般与-g选项同时使用，表示新用户组的GID可以与系统已有用户组的GID相同。</p>
+<h3 id="如果要删除一个已有的用户组，使用groupdel命令，其格式如下："><a href="#如果要删除一个已有的用户组，使用groupdel命令，其格式如下：" class="headerlink" title="如果要删除一个已有的用户组，使用groupdel命令，其格式如下："></a>如果要删除一个已有的用户组，使用groupdel命令，其格式如下：</h3><p>•groupdel 用户组</p>
+<h3 id="修改用户组的属性使用groupmod命令。其语法如下："><a href="#修改用户组的属性使用groupmod命令。其语法如下：" class="headerlink" title="修改用户组的属性使用groupmod命令。其语法如下："></a>修改用户组的属性使用groupmod命令。其语法如下：</h3><p>•groupmod 选项 用户组</p>
+<p>•常用的选项有：</p>
+<p>•-g GID 为用户组指定新的组标识号。</p>
+<p>•-o 与-g选项同时使用，用户组的新GID可以与系统已有用户组的GID相同。</p>
+<p>•-n新用户组 将用户组的名字改为新名字</p>
+<h1 id="输入输出流"><a href="#输入输出流" class="headerlink" title="输入输出流"></a>输入输出流</h1><h3 id="•在-Linux-中，有预设的三个输入输出流："><a href="#•在-Linux-中，有预设的三个输入输出流：" class="headerlink" title="•在 Linux 中，有预设的三个输入输出流："></a>•在 Linux 中，有预设的三个输入输出流：</h3><p>1.标准输入流 stdin</p>
+<p>2.标准输出流 stdout</p>
+<p>3.标准错误流 stderr</p>
+<p>•shell 中我们也可以进行流的重定向：</p>
+<p>•使用 <strong>&gt;</strong>  将程序的标准输出写入到某个文件</p>
+<p>•使用 <strong>&gt;&gt;</strong>  将程序的标准输出追加写入到某个文件</p>
+<p>•使用 <strong>&lt;</strong>  将某个文件作为程序的标准输入</p>
+<p>•使用 <strong>2&gt;</strong>  将程序的标准错误输出写入到某个文件</p>
+<p>•使用 <strong>2&gt;&gt;</strong> 将程序的标准错误输出追加写入到某个文件</p>
+<h1 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h1><p>•有时候，我们希望将多个命令组合起来来完成某些任务。</p>
+<p>•在 shell 中，管道是达成这个目标的理想工具。它将上一个命令的标准输出流和下一个命令的标准输入流连接起来。</p>
+<p>•管道符号为 |，并且管道可以链式使用。</p>
+<h1 id="后台任务"><a href="#后台任务" class="headerlink" title="后台任务"></a>后台任务</h1><p>•在命令结尾附加“&amp;”，即可让任务转入后台运行。</p>
+<p>•Shell 退出时，会杀死所有后台任务。</p>
+<p>•前台命令运行时，可以使用 Ctrl+Z 将命令挂起，然后使用 bg 命令即可使其转入后台运行。</p>
+<p>•使用 fg 命令可以将后台命令转回前台执行。</p>
+<p>•如果没有其它配置，后台任务仍然会向前台终端写入输出，可以使用 jobs 来查看。</p>
+<p>•如果希望后台任务不被杀死，可以使用 nohup 运行程序，也可以对已经在后台执行的任务 disown。</p>
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1></article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">MaoMao</a></p><p> <span>Link:  </span><a href="http://example.com/2023/03/10/Linux%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">http://example.com/2023/03/10/Linux%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2023/03/09/CQUPT-Sre-2023-winter-assessment-re1/" title="CQUPT Sre 2023 winter assessment re1"><span>NextPost ></span><br><span class="nextTitle">CQUPT Sre 2023 winter assessment re1</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5%E7%BB%88%E7%AB%AF%EF%BC%9A%E7%82%B9%E5%87%BB%E9%BC%A0%E6%A0%87%E5%8F%B3%E9%94%AE%E5%86%8D%E7%82%B9%E5%87%BBOpen-Terminals"><span class="toc-number">1.</span> <span class="toc-text">进入终端：点击鼠标右键再点击Open Terminals</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#vim%E4%B8%80%E8%88%AC%E6%9C%896%E7%A7%8D%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">vim一般有6种工作模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E6%A8%A1%E5%BC%8F%EF%BC%9A%E4%BD%BF%E7%94%A8vim%E6%89%93%E5%BC%80%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E6%97%B6%E9%BB%98%E8%AE%A4%E6%A8%A1%E5%BC%8F%EF%BC%8C%E4%B9%9F%E5%8F%AB%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%EF%BC%8C%E5%85%81%E8%AE%B8%E7%94%A8%E6%88%B7%E9%80%9A%E8%BF%87%E5%90%84%E7%A7%8D%E5%91%BD%E4%BB%A4%E6%B5%8F%E8%A7%88%E4%BB%A3%E7%A0%81%E3%80%81%E6%BB%9A%E5%B1%8F%E7%AD%89%E6%93%8D%E4%BD%9C%E3%80%82"><span class="toc-number">2.0.0.0.1.</span> <span class="toc-text">普通模式：使用vim打开一个文件时默认模式，也叫命令模式，允许用户通过各种命令浏览代码、滚屏等操作。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F%EF%BC%9A%E4%B9%9F%E5%8F%AF%E4%BB%A5%E5%8F%AB%E5%81%9A%E7%BC%96%E8%BE%91%E6%A8%A1%E5%BC%8F%EF%BC%8C%E5%9C%A8%E6%99%AE%E9%80%9A%E6%A8%A1%E5%BC%8F%E4%B8%8B%E6%95%B2%E5%87%BB-i-%E3%80%81a-%E6%88%96-o-%E5%B0%B1%E8%BF%9B%E5%85%A5%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F%EF%BC%8C%E5%85%81%E8%AE%B8%E7%94%A8%E6%88%B7%E9%80%9A%E8%BF%87%E9%94%AE%E7%9B%98%E8%BE%93%E5%85%A5%E3%80%81%E7%BC%96%E8%BE%91%E3%80%82"><span class="toc-number">2.0.0.0.2.</span> <span class="toc-text">插入模式：也可以叫做编辑模式，在普通模式下敲击 i 、a 或 o 就进入插入模式，允许用户通过键盘输入、编辑。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%9C%A8%E6%99%AE%E9%80%9A%E6%A8%A1%E5%BC%8F%E4%B8%8B%EF%BC%8C%E5%85%88%E8%BE%93%E5%85%A5%E5%86%92%E5%8F%B7-%EF%BC%8C%E6%8E%A5%E7%9D%80%E8%BE%93%E5%85%A5%E5%91%BD%E4%BB%A4%EF%BC%8C%E5%B0%B1%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4%E5%AF%B9vim%E8%BF%9B%E8%A1%8C%E9%85%8D%E7%BD%AE%E4%BA%86%EF%BC%8C%E5%A6%82%E6%94%B9%E5%8F%98%E9%A2%9C%E8%89%B2%E4%B8%BB%E9%A2%98%E3%80%81%E6%98%BE%E7%A4%BA%E8%A1%8C%E5%8F%B7%E7%AD%89%EF%BC%8C%E8%BF%99%E4%BA%9B%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4%E4%B9%9F%E5%8F%AF%E4%BB%A5%E4%BF%9D%E5%AD%98%E5%88%B0-x2F-etc-x2F-vim-x2F-vimrc%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%AD%EF%BC%8C%E6%AF%8F%E6%AC%A1%E6%89%93%E5%BC%80%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%89%A7%E8%A1%8C%E3%80%82"><span class="toc-number">2.0.0.0.3.</span> <span class="toc-text">命令行模式：在普通模式下，先输入冒号:，接着输入命令，就可以通过配置命令对vim进行配置了，如改变颜色主题、显示行号等，这些配置命令也可以保存到&#x2F;etc&#x2F;vim&#x2F;vimrc配置文件中，每次打开默认配置执行。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%9C%A8%E6%99%AE%E9%80%9A%E6%A8%A1%E5%BC%8F%E4%B8%8B%E6%95%B2%E5%87%BB%E5%89%8D%E7%9B%98%E4%B8%8A%E7%9A%84-v-%E9%94%AE%EF%BC%8C%E5%B0%B1%E8%BF%9B%E5%85%A5%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A8%A1%E5%BC%8F%EF%BC%8C%E7%84%B6%E5%90%8E%E7%A7%BB%E5%8A%A8%E5%85%89%E6%A0%87%E5%B0%B1%E5%8F%AF%E4%BB%A5%E9%80%89%E4%B8%AD%E4%B8%80%E5%9D%97%E6%96%87%E6%9C%AC%EF%BC%8C%E5%B8%B8%E7%94%A8%E6%9D%A5%E5%AE%8C%E6%88%90%E6%96%87%E6%9C%AC%E7%9A%84%E5%A4%8D%E5%88%B6%E3%80%81%E7%B2%98%E8%B4%B4%E3%80%81%E5%88%A0%E9%99%A4%E7%AD%89%E6%93%8D%E4%BD%9C%E3%80%82"><span class="toc-number">2.0.0.0.4.</span> <span class="toc-text">可视化模式：在普通模式下敲击前盘上的 v 键，就进入可视化模式，然后移动光标就可以选中一块文本，常用来完成文本的复制、粘贴、删除等操作。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9B%BF%E6%8D%A2%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%A6%82%E6%9E%9C%E6%88%91%E4%BB%AC%E6%83%B3%E4%BF%AE%E6%94%B9%E6%9F%90%E4%B8%AA%E5%AD%97%E7%AC%A6%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E5%85%88%E8%BF%9B%E5%85%A5%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F%EF%BC%8C%E5%88%A0%E9%99%A4%EF%BC%8C%E7%84%B6%E5%90%8E%E5%86%8D%E8%BE%93%E5%85%A5%E6%96%B0%E7%9A%84%E5%AD%97%E7%AC%A6%EF%BC%8C%E7%9B%B4%E6%8E%A5%E5%9C%A8%E6%99%AE%E9%80%9A%E6%A8%A1%E5%BC%8F%E4%B8%8B%EF%BC%8C%E6%95%B2%E5%87%BBR%E9%94%AE%E5%B0%B1%E5%8F%AF%E4%BB%A5%E7%9B%B4%E6%8E%A5%E6%9B%BF%E6%8D%A2%E3%80%82"><span class="toc-number">2.0.0.0.5.</span> <span class="toc-text">替换模式：如果我们想修改某个字符，不需要先进入插入模式，删除，然后再输入新的字符，直接在普通模式下，敲击R键就可以直接替换。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#EX%E6%A8%A1%E5%BC%8F%EF%BC%9A%E7%B1%BB%E4%BC%BC%E4%BA%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A8%A1%E5%BC%8F%EF%BC%8C%E5%8F%AF%E4%BB%A5%E4%B8%80%E6%AC%A1%E8%BF%90%E8%A1%8C%E5%A4%9A%E4%B8%AA%E5%91%BD%E4%BB%A4"><span class="toc-number">2.0.0.0.6.</span> <span class="toc-text">EX模式：类似于命令行模式，可以一次运行多个命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#vim%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87%E4%B8%8D%E5%90%8C%E7%9A%84%E9%94%AE%E8%BF%9B%E8%A1%8C%E5%88%87%E6%8D%A2%EF%BC%8C%E7%94%A8%E6%88%B7%E7%BB%9F%E4%B8%80%E4%BD%BF%E7%94%A8ESC%E9%94%AE%E8%BF%94%E5%9B%9E%E5%88%B0%E6%99%AE%E9%80%9A%E6%A8%A1%E5%BC%8F%E3%80%82"><span class="toc-number">2.0.0.0.7.</span> <span class="toc-text">vim的各种工作模式可以通过不同的键进行切换，用户统一使用ESC键返回到普通模式。</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Man-Page-%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">Man Page 常用操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Man%E5%B8%B8%E7%94%A8%E7%9A%84%E5%BF%AB%E6%8D%B7%E9%94%AE%EF%BC%9A"><span class="toc-number">3.0.0.1.</span> <span class="toc-text">Man常用的快捷键：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Man%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="toc-number">3.0.0.2.</span> <span class="toc-text">Man常用的命令：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Man-page%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">3.0.1.</span> <span class="toc-text">Man page的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#man%E6%80%BB%E5%85%B1%E6%9C%899%E7%A7%8D%E5%88%86%E7%B1%BB"><span class="toc-number">3.0.1.1.</span> <span class="toc-text">man总共有9种分类</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%B6%8A%E5%B0%8F%E7%9A%84%E5%88%86%E7%B1%BB%E5%85%B6%E6%9F%A5%E6%89%BE%E6%97%B6%E9%BB%98%E8%AE%A4%E4%BC%98%E5%85%88%E5%BA%A6%E8%B6%8A%E9%AB%98"><span class="toc-number">3.0.1.1.1.</span> <span class="toc-text">越小的分类其查找时默认优先度越高</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%89%E6%97%B6%E5%AD%98%E5%9C%A8%E5%B1%9E%E4%BA%8E%E4%B8%8D%E5%90%8C%E7%A7%8D%E7%B1%BB%E4%BD%86%E6%98%AF%E5%90%8C%E5%90%8D%E7%9A%84%E6%83%85%E5%86%B5%EF%BC%8C%E5%A6%82manpath%E5%91%BD%E4%BB%A4%E5%8D%B3%E6%98%AF%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%8F%88%E6%98%AF%E4%B8%80%E4%B8%AA%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">3.0.1.1.2.</span> <span class="toc-text">有时存在属于不同种类但是同名的情况，如manpath命令即是一个文件格式又是一个执行命令</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E6%A0%B9%E7%9B%AE%E5%BD%95"><span class="toc-number">4.</span> <span class="toc-text">Linux根目录</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-bin-%E6%AD%A4%E7%9B%AE%E5%BD%95%E5%AD%98%E6%94%BE%E6%89%80%E6%9C%89%E7%94%A8%E6%88%B7%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="toc-number">4.0.0.0.1.</span> <span class="toc-text">&#x2F;bin   此目录存放所有用户的命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-boot-Linux%E5%86%85%E6%A0%B8%E5%8F%8A%E5%BC%95%E5%AF%BC%E7%B3%BB%E7%BB%9F%E7%A8%8B%E5%BA%8F%E6%89%80%E9%9C%80%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-number">4.0.0.0.2.</span> <span class="toc-text">&#x2F;boot   Linux内核及引导系统程序所需的文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-dev-%E6%89%80%E6%9C%89%E8%AE%BE%E5%A4%87%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95%EF%BC%88%E5%A6%82%E5%A3%B0%E5%8D%A1%E3%80%81%E7%A3%81%E7%9B%98%E3%80%81%E5%85%89%E9%A9%B1%EF%BC%89"><span class="toc-number">4.0.0.0.3.</span> <span class="toc-text">&#x2F;dev   所有设备文件的目录（如声卡、磁盘、光驱）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-etc-%E4%B8%BB%E8%A6%81%E5%AD%98%E6%94%BE%E4%BA%86%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E6%96%B9%E9%9D%A2%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-number">4.0.0.0.4.</span> <span class="toc-text">&#x2F;etc   主要存放了系统配置方面的文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-home-%E5%90%84%E4%B8%AA%E7%94%A8%E6%88%B7%E7%9A%84%E5%AE%B6%E7%9B%AE%E5%BD%95"><span class="toc-number">4.0.0.0.5.</span> <span class="toc-text">&#x2F;home   各个用户的家目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-lib-%E5%BA%93%E6%96%87%E4%BB%B6%E5%AD%98%E6%94%BE%E7%9B%AE%E5%BD%95"><span class="toc-number">4.0.0.0.6.</span> <span class="toc-text">&#x2F;lib   库文件存放目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-lost-found-%E5%BD%93%E7%B3%BB%E7%BB%9F%E6%84%8F%E5%A4%96%E5%B4%A9%E6%BA%83%E6%88%96%E6%84%8F%E5%A4%96%E5%85%B3%E6%9C%BA%E6%97%B6-%E7%94%A8%E4%BA%8E%E4%BF%AE%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6%E7%A2%8E%E7%89%87"><span class="toc-number">4.0.0.0.7.</span> <span class="toc-text">&#x2F;lost+found   当系统意外崩溃或意外关机时,用于修复的文件碎片</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-mnt-%E7%94%A8%E4%BA%8E%E4%B8%B4%E6%97%B6%E6%8C%82%E8%BD%BD%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="toc-number">4.0.0.0.8.</span> <span class="toc-text">&#x2F;mnt   用于临时挂载存储设备</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-var-%E5%AD%98%E6%94%BE%E5%86%85%E5%AE%B9%E5%B8%B8%E5%8F%98%E5%8A%A8%E7%9A%84%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95"><span class="toc-number">4.0.0.0.9.</span> <span class="toc-text">&#x2F;var   存放内容常变动的文件目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-opt-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E5%AD%98%E6%94%BE%E7%9B%AE%E5%BD%95"><span class="toc-number">4.0.0.0.10.</span> <span class="toc-text">&#x2F;opt   自定义软件安装存放目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-proc-%E8%BF%9B%E7%A8%8B%E5%8F%8A%E5%86%85%E6%A0%B8%E4%BF%A1%E6%81%AF%E5%AD%98%E6%94%BE%E7%9B%AE%E5%BD%95%E3%80%82"><span class="toc-number">4.0.0.0.11.</span> <span class="toc-text">&#x2F;proc   进程及内核信息存放目录。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-root-root%E7%94%A8%E6%88%B7%E5%AE%B6%E7%9B%AE%E5%BD%95"><span class="toc-number">4.0.0.0.12.</span> <span class="toc-text">&#x2F;root   root用户家目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-tmp-%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95"><span class="toc-number">4.0.0.0.13.</span> <span class="toc-text">&#x2F;tmp   临时文件目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-usr-%E7%B3%BB%E7%BB%9F%E5%AD%98%E6%94%BE%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%9B%AE%E5%BD%95"><span class="toc-number">4.0.0.0.14.</span> <span class="toc-text">&#x2F;usr   系统存放程序的目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-sbin-%E7%BB%99root%E7%94%A8%E6%88%B7%E4%BD%BF%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="toc-number">4.0.0.0.15.</span> <span class="toc-text">&#x2F;sbin   给root用户使用的命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x2F-sys-%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0"><span class="toc-number">4.0.0.0.16.</span> <span class="toc-text">&#x2F;sys   系统内核参数</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E7%9A%84%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E8%B7%AF%E5%BE%84"><span class="toc-number">5.</span> <span class="toc-text">Linux树形结构的文件系统——路径</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84"><span class="toc-number">6.</span> <span class="toc-text">Linux文件系统——树形结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E9%93%BE%E6%8E%A5"><span class="toc-number">7.</span> <span class="toc-text">Linux 链接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%A2%E9%93%BE%E6%8E%A5%E5%88%86%E4%B8%BA%E4%B8%A4%E7%A7%8D%EF%BC%9A"><span class="toc-number">7.0.1.</span> <span class="toc-text">•链接分为两种：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AC%E9%93%BE%E6%8E%A5%EF%BC%9A"><span class="toc-number">7.0.1.1.</span> <span class="toc-text">硬链接：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BD%AF%E9%93%BE%E6%8E%A5"><span class="toc-number">7.0.1.2.</span> <span class="toc-text">软链接</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ls-l"><span class="toc-number">7.0.2.</span> <span class="toc-text"># ls -l</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="toc-number">7.1.</span> <span class="toc-text">Linux文件权限管理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%A6%E6%88%B7%E7%AE%A1%E7%90%86%E2%80%94%E2%80%94%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7"><span class="toc-number">8.</span> <span class="toc-text">账户管理——添加用户</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%A2%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7%E4%BD%BF%E7%94%A8useradd%E5%91%BD%E4%BB%A4%EF%BC%8C%E5%85%B6%E8%AF%AD%E6%B3%95%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="toc-number">8.0.1.</span> <span class="toc-text">•添加新的用户账号使用useradd命令，其语法如下：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%A6%E6%88%B7%E7%AE%A1%E7%90%86%E2%80%94%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9"><span class="toc-number">9.</span> <span class="toc-text">账户管理—删除和修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%A0%E9%99%A4%E5%B8%90%E5%8F%B7"><span class="toc-number">9.0.1.</span> <span class="toc-text">1.删除帐号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BF%AE%E6%94%B9%E5%B8%90%E5%8F%B7"><span class="toc-number">9.0.2.</span> <span class="toc-text">2. 修改帐号</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%A6%E6%88%B7%E7%AE%A1%E7%90%86%E2%80%94%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9-1"><span class="toc-number">10.</span> <span class="toc-text">账户管理—删除和修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A2%9E%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E7%94%A8%E6%88%B7%E7%BB%84%E4%BD%BF%E7%94%A8groupadd%E5%91%BD%E4%BB%A4%E3%80%82%E5%85%B6%E6%A0%BC%E5%BC%8F%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="toc-number">10.0.1.</span> <span class="toc-text">增加一个新的用户组使用groupadd命令。其格式如下：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E8%A6%81%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E5%B7%B2%E6%9C%89%E7%9A%84%E7%94%A8%E6%88%B7%E7%BB%84%EF%BC%8C%E4%BD%BF%E7%94%A8groupdel%E5%91%BD%E4%BB%A4%EF%BC%8C%E5%85%B6%E6%A0%BC%E5%BC%8F%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="toc-number">10.0.2.</span> <span class="toc-text">如果要删除一个已有的用户组，使用groupdel命令，其格式如下：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E7%BB%84%E7%9A%84%E5%B1%9E%E6%80%A7%E4%BD%BF%E7%94%A8groupmod%E5%91%BD%E4%BB%A4%E3%80%82%E5%85%B6%E8%AF%AD%E6%B3%95%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="toc-number">10.0.3.</span> <span class="toc-text">修改用户组的属性使用groupmod命令。其语法如下：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E6%B5%81"><span class="toc-number">11.</span> <span class="toc-text">输入输出流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%A2%E5%9C%A8-Linux-%E4%B8%AD%EF%BC%8C%E6%9C%89%E9%A2%84%E8%AE%BE%E7%9A%84%E4%B8%89%E4%B8%AA%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E6%B5%81%EF%BC%9A"><span class="toc-number">11.0.1.</span> <span class="toc-text">•在 Linux 中，有预设的三个输入输出流：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%A1%E9%81%93"><span class="toc-number">12.</span> <span class="toc-text">管道</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1"><span class="toc-number">13.</span> <span class="toc-text">后台任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%98%E9%87%8F"><span class="toc-number">14.</span> <span class="toc-text">变量</span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
