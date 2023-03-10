@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-09T13:46:59.154Z</updated>
+  <updated>2023-03-10T14:57:10.651Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://example.com/2023/03/09/CQUPT-Sre-2023-winter-assessment-re1/"/>
     <id>http://example.com/2023/03/09/CQUPT-Sre-2023-winter-assessment-re1/</id>
     <published>2023-03-09T13:09:52.000Z</published>
-    <updated>2023-03-09T13:46:59.154Z</updated>
+    <updated>2023-03-10T14:57:10.651Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="re1"><a href="#re1" class="headerlink" title="re1"></a>re1</h2><p>我先查壳发现是32位，无壳。</p><p><img src="/pic/202303091.jpg" alt="查壳"></p>]]></content>
+    <content type="html"><![CDATA[<h2 id="re1"><a href="#re1" class="headerlink" title="re1"></a>re1</h2><p>我先查壳发现是32位，无壳。</p><p><img src="/pic/202303091.jpg" alt="查壳"></p><p>拖到idapro，进去找到main函数，然后反汇编，发现是一连串if语句，然后果断把跳转汇编nop掉</p><p><img src="/pic/202303092.jpg" alt="第一次尝试"></p><p>猛然发现，竟然找我要flag，那就老老实实从头分析。哭死。</p><h3 id="part1"><a href="#part1" class="headerlink" title="part1"></a>part1</h3><p>之后看了一下hint，知道了要改花指令。重新打开文件，发现反汇编代码标红， nop掉花指令  (写wp时用了新程序，所以没有注释和修改，但我做题的时候写了蛮多的)</p><p><img src="/pic/202303093.png" alt="nop花指令"></p><p>Sub_401210是base64变表加密，用原数组异或0x64得到新表(别问，问就是一个一个敲的（其实这里可以用shift+E可以快速获得数据）</p><p><img src="/pic/202303094.jpg" alt="xor"></p><p>所以第一部分： flag{w3lCOm3</p><p> (这个在线网站真的好好用，一看到有关crypto的立马打开它，所以redrock为什么美没有crypto考核呢？感 觉做那个很有意思)</p><p><img src="/pic/202303095.jpg" alt="part1flag"></p><h3 id="part2"><a href="#part2" class="headerlink" title="part2"></a>part2</h3><p>第二部分去花后再查看，一开始没去花的时候还以为出错题了，害。其实此处的dword_BA5000在静态观察时跟进的值并不一样，因为在main函数第一行就已经对其进行赋值了</p><p><img src="/pic/202303096.jpg" alt="lookfor"></p><p>之后发现Dword_BA5000和unk_405057异或结果无意义，跟进调试</p><p><img src="/pic/202303097.jpg" alt="跟进"></p><p>就得到第二部分： <em>7O_redrOck</em>_</p><h3 id="part3"><a href="#part3" class="headerlink" title="part3"></a>part3</h3><p>第三部分(((unsigned __int8)a1[3] ^ 0xCC) &lt;&lt; 24) | ((a1[2] ^ 0x1E) &lt;&lt; 16) | ((a1[1] ^ 0x12) &lt;&lt; 8) | *a1 ，也就是a1四个字节经过运算的结果逆序排列并拼成一个三十二位数，即0xB17B6035</p><p> (这里看了好几天，一开始真的很难理解好嘛，你看看上面的句子，我一口气都读不完。之后写了个语 句来解题， hint上的仿照写一个应该是这个意思，寻思着不写一个也懒得搞出来啊。这题出的真的很好 哎)</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="built_in">chr</span>(<span class="number">0x35</span>)+<span class="built_in">chr</span>(<span class="number">0x60</span>^<span class="number">0x12</span>)+<span class="built_in">chr</span>(<span class="number">0x7B</span>^<span class="number">0x1E</span>)+<span class="built_in">chr</span>(<span class="number">0xB1</span>^<span class="number">0xCC</span>))</span><br></pre></td></tr></table></figure><p>输出得到第三部分： 5re}</p><h3 id="最终flag"><a href="#最终flag" class="headerlink" title="最终flag"></a>最终flag</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;w3lCOm3_7O_redrOck_5re&#125;</span><br></pre></td></tr></table></figure><p> (写了整整十天，熬了三次通宵 ……泪目了好嘛)</p><p><img src="/pic/202303098.jpg" alt="flag"></p><h3 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h3><p>这次考核我真的….害，好几次崩溃。就这一题我想死的心都有了，但做完发现确实不难，还是我自己技 术不行。也是第一次了解到花指令，然后上网搜了搜花指令的形成与去除还有加入花指令目的等等。然 后发现re跟crypto的联系真的蛮紧密的，做re的时候就像解密一样，都要一层层观察发现。最后的那一 段简直要了我的狗命！！！然后无意间发现了与它类似的的题目，当时本来都打算放弃了，然后我就索 性把语句拿去直接搜，搜到了一个类似的题目，然后有了灵感。反正以后尽量别遇到这种。呸，还是要遇到，遇到多了就无所谓了。还是要慢慢学。如果这篇wp有什么不详细的地方也可以随时联系我，我进 行修改。别问为什么不写re2和pwn，问就是不想做！就是叛逆！还有那个植物大战僵尸，那个sp壳是 什么意思啊(凶狠语气)，根本不知道怎么脱(生吃了出题人的表情)，是不是玩不起！(有了想线下 砸红岩网校的冲动)我甚至都打不开游戏！咳咳，我劝出题人耗子尾汁！不然直接掏出九转大肠给出题 人加餐！怕了吧！(得意的表情)</p>]]></content>
     
     
       
