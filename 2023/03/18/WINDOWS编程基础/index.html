@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="MaoMao"><meta name="renderer" content="webkit"><meta name="copyright" content="MaoMao"><meta name="keywords" content="MaoMao's Blog"><meta name="description" content="A cat's blog"><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>WINDOWS编程基础 · MaoMao's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="MaoMao's Blog" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">MaoMao</div><div class="profile-signature">cat???</div><div class="friends"><div>FRIENDS</div><span><a href="eutop1a.github.io" target="_black">friendA</a></span><span><a href="http://tsingshui.me/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">MaoMao's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">WINDOWS编程基础</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2023-03-18</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="学习记录"> 学习记录</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="应用程序分类"><a href="#应用程序分类" class="headerlink" title="应用程序分类"></a>应用程序分类</h1><table>
+<thead>
+<tr>
+<th>分类</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>控制台程序Console</td>
+<td>DOS程序，本身没有窗口，通过Windows DOS窗口执行</td>
+</tr>
+<tr>
+<td>窗口程序</td>
+<td>拥有自己的窗口，可以和用户交互</td>
+</tr>
+<tr>
+<td>库程序</td>
+<td>存放代码、数据的程序，执行文件可以从中取出代码执行和获取数据</td>
+</tr>
+</tbody></table>
+<p><strong>Ex</strong>：1.静态库程序：扩展名<strong>LIB</strong>，在编译连接程序时，将代码放入到执行文件中。</p>
+<p>​        2.动态库程序：扩展名<strong>DLL</strong>，在执行文件执行时从中获取代码。</p>
+<p>由于DOS窗口是由Windows提供，程序进程结束后，会立即将窗口回收。为了想要持续显示窗口，可以加入getchar()指令。</p>
+<p>在一个解决方案中可能会有很多项目，但所有项目的最终文件都会显示在解决方案的Debug目录下。一个解决方案中可以有很多项目，但是只有一个启动项，所以想要编译链接其他项目，需要将此项目将设为启动项。</p>
+<p>静态库程序没有入口函数，无法执行，最终文件无法进入内存。动态库程序有入口函数，但不能独立运行，必须依附其它程序运行</p>
+<h2 id="应用程序对比"><a href="#应用程序对比" class="headerlink" title="应用程序对比"></a>应用程序对比</h2><table>
+<thead>
+<tr>
+<th>入口函数</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>控制台程序</td>
+<td>main</td>
+</tr>
+<tr>
+<td>窗口程序</td>
+<td>WinMain</td>
+</tr>
+<tr>
+<td>动态库程序</td>
+<td>DLLMain</td>
+</tr>
+<tr>
+<td>静态库程序</td>
+<td>无入口函数</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>文件存在方式</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>控制台程序、窗口程序（可执行程序）</td>
+<td>EXE文件</td>
+</tr>
+<tr>
+<td>动态库程序</td>
+<td>DLL文件</td>
+</tr>
+<tr>
+<td>静态库程序</td>
+<td>LIB文件</td>
+</tr>
+</tbody></table>
+<h1 id="开发工具和库"><a href="#开发工具和库" class="headerlink" title="开发工具和库"></a>开发工具和库</h1><h2 id="编译工具"><a href="#编译工具" class="headerlink" title="编译工具"></a>编译工具</h2><table>
+<thead>
+<tr>
+<th>编译工具</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编译器CL.EXE</td>
+<td>将源代码编译成目标代码.obj</td>
+</tr>
+<tr>
+<td>链接器LINK.EXE</td>
+<td>将目标代码、库链接生成最终文件</td>
+</tr>
+<tr>
+<td>资源编译器RC.EXE</td>
+<td>（.rc)将资源编译，最终通过链接器存入最终文件</td>
+</tr>
+</tbody></table>
+<p>路径：在VS安装文件夹下的\VC\bin中</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">MaoMao</a></p><p> <span>Link:  </span><a href="http://example.com/2023/03/18/WINDOWS%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/">http://example.com/2023/03/18/WINDOWS%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2023/03/18/EASYHOOK-WP/" title="EASYHOOK_WP"><span>NextPost ></span><br><span class="nextTitle">EASYHOOK_WP</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%88%86%E7%B1%BB"><span class="toc-number">1.</span> <span class="toc-text">应用程序分类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%AF%B9%E6%AF%94"><span class="toc-number">1.1.</span> <span class="toc-text">应用程序对比</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E5%92%8C%E5%BA%93"><span class="toc-number">2.</span> <span class="toc-text">开发工具和库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7"><span class="toc-number">2.1.</span> <span class="toc-text">编译工具</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

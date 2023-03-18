@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="MaoMao"><meta name="renderer" content="webkit"><meta name="copyright" content="MaoMao"><meta name="keywords" content="MaoMao's Blog"><meta name="description" content="A cat's blog"><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>EASYHOOK_WP · MaoMao's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="MaoMao's Blog" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">MaoMao</div><div class="profile-signature">cat???</div><div class="friends"><div>FRIENDS</div><span><a href="eutop1a.github.io" target="_black">friendA</a></span><span><a href="http://tsingshui.me/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">MaoMao's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">EASYHOOK_WP</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2023-03-18</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="学习记录"> 学习记录</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="EASYHOOK-wp"><a href="#EASYHOOK-wp" class="headerlink" title="EASYHOOK_wp"></a>EASYHOOK_wp</h1><p>这道题是上周末被压力下写的。这是俺第一次见到hook题，题目中也有很多API，看着真的很火大。</p>
+<p>直接打开文件查看伪C代码。</p>
+<p><img src="/pic/20230318131140222.png" alt="反汇编"></p>
+<p>一开始可以注意到，sub_401240是对NumberOfBytesWritten进行的操作，因为之后的if中有输出flag的标志，所以先跟进此函数。</p>
+<p><img src="/pic/image-202303182.png" alt="sub_401240"></p>
+<p>可以注意到这一句代码v4[a1 - v4 + result] &#x3D;&#x3D; v4[result]，真的很无语，根本不知道这在干嘛，之后问了学长知道这是HOOK，所以直接放弃这个函数，从头开始分析。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">  scanf(aPleaseInputFla);</span><br><span class="line">  scanf(&quot;%31s&quot;, Buffer);</span><br><span class="line">  if ( strlen(Buffer) == 19 )</span><br><span class="line">  &#123;</span><br><span class="line">    sub_401220();//未知函数</span><br><span class="line">    FileA = CreateFileA(FileName, 0x40000000u, 0, 0, 2u, 0x80u, 0);//创建文件</span><br><span class="line">    WriteFile(FileA, Buffer, 0x13u, &amp;NumberOfBytesWritten, 0);//写入内容，都是些API</span><br><span class="line">    sub_401240(Buffer, &amp;NumberOfBytesWritten);//判断以输出flag，但之前验证了这是个HOOK</span><br><span class="line">    if ( NumberOfBytesWritten == 1 )</span><br><span class="line">      scanf(aRightFlagIsYou);</span><br><span class="line">    else</span><br><span class="line">      scanf(aWrong);</span><br><span class="line">    system(Command);</span><br><span class="line">    return 0;</span><br><span class="line">  &#125;</span><br><span class="line">  else</span><br><span class="line">  &#123;</span><br><span class="line">    scanf(aWrong);</span><br><span class="line">    system(Command);</span><br><span class="line">    return 0;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先跟进第一个未知函数，可以看到很多很多API，真的想死，一个一个查了很久</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">CurrentProcessId = GetCurrentProcessId();//API获取进程ID，就是当前程序的ID</span><br><span class="line">hProcess = OpenProcess(0x1F0FFFu, 0, CurrentProcessId);//API返回现有进程的句柄。</span><br><span class="line">LibraryA = LoadLibraryA(LibFileName);//API将指定的可执行模块映射到调用进程的地址空间，这里LibFileName跟进存入的是kernel32.dll模块，就是导入了它</span><br><span class="line">WriteFile_0 = GetProcAddress(LibraryA, ProcName);//API返回指定的导出动态链接库（DLL）函数的地址。 ProcName存放的是WriteFile函数名，也就是导入WriteFile函数。</span><br><span class="line">lpAddress = WriteFile_0;//获取WriteFile函数地址</span><br><span class="line">if ( !WriteFile_0 )//kernel32.dll模块的WriteFile函数一定存在</span><br><span class="line">  return scanf(&amp;unk_40A044);//&amp;unk_40A044处的字符串是获取原API入口地址出错</span><br><span class="line">unk_40C9B4 = *lpAddress;//获取WriteFile函数的地址</span><br><span class="line">*(&amp;unk_40C9B4 + 4) = *(lpAddress + 4);</span><br><span class="line">byte_40C9BC = -23;//这里转十六进制是E9，也就是JMP的机器码指令</span><br><span class="line">dword_40C9BD = sub_401080 - lpAddress - 5;//这里是一个偏移地址，最重要的是两个关键变量在内存上是连续的。语句解释为“偏移地址=目标地址-当前地址-5”(就是E9这条指令的长度，jmp和其后四位地址共占5个字节)。所以前面直接用E9，这里直接用偏移地址就省去编译生成机器码那一步,也就是HOOK的原型。</span><br><span class="line">return sub_4010D0();//未知函数，继续跟进</span><br></pre></td></tr></table></figure>
+
+<p>跟进sub_4010D0,全是API，真的好麻烦</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v1 = 0;</span><br><span class="line">VirtualProtectEx(hProcess, lpAddress, 5u, 4u, &amp;flOldProtect);//VirtualProtectEx(进程，修改地址，修改区域大小，[修改其中权限，1，2，4对应执行，写，读]，一个保存修改前权限的变量)，这三行作用是对lpAddress所存储的地址处进行了5字节的权限修改操作，先改成读写再往此处写入以前面E9 偏移量地址处的5个字节（即上面的跳板指令），最后恢复权限，完成修改。</span><br><span class="line">WriteProcessMemory(hProcess, lpAddress, &amp;byte_40C9BC, 5u, 0);</span><br><span class="line">return VirtualProtectEx(hProcess, lpAddress, 5u, flOldProtect, &amp;v1);</span><br></pre></td></tr></table></figure>
+
+<p>这里执行到WriteFile函数的时候就会变成一个跳转语句，跳转到目标地址sub_401080处，跟进</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int v5; // ebx</span><br><span class="line"></span><br><span class="line">v5 = sub_401000(lpBuffer, nNumberOfBytesToWrite);//目标函数</span><br><span class="line">sub_401140();//重写WriteFile函数地址处的内存，和前面4010D0处函数的三句类似,只是代码 WriteProcessMemory(hProcess, lpAddress, &amp;unk_40C9B4, 5u, 0);写入的地址为&amp;unk_40C9B4,这的确是WriteFile函数地址,就是为了下面那个WriteFile函数不受影响,真正是写入文件函数</span><br><span class="line">WriteFile(hFile, lpBuffer, nNumberOfBytesToWrite, lpNumberOfBytesWritten, lpOverlapped);</span><br><span class="line">if ( v5 )</span><br><span class="line">  *lpNumberOfBytesWritten = 1;//这里*lpNumberOfBytesWritten已经赋值为1了，也是全局变量,会发现主函数的sub_401240(input_flag, &amp;NumberOfBytesWritten);这个hook函数就算对不上数组字符也不会设置*lpNumberOfBytesWritten = 0；所以只要这里真正加密的对了，后面错误退出*lpNumberOfBytesWritten还是等于1，所以只需继续跟进目标函数，使return 1即可</span><br><span class="line">return 0;</span><br></pre></td></tr></table></figure>
+
+<p>跟进sub_401000</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">for ( i = 0; i &lt; a2; ++i )</span><br><span class="line">&#123;</span><br><span class="line">  if ( i == 18 )</span><br><span class="line">  &#123;</span><br><span class="line">    *(a1 + 18) ^= 0x13u;</span><br><span class="line">  &#125;</span><br><span class="line">  else</span><br><span class="line">  &#123;</span><br><span class="line">    if ( i % 2 )</span><br><span class="line">      v3 = *(i + a1) - i;</span><br><span class="line">    else</span><br><span class="line">      v3 = *(i + a1 + 2);</span><br><span class="line">    *(i + a1) = i ^ v3;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">v4 = 0;</span><br><span class="line">if ( a2 &lt;= 0 )</span><br><span class="line">  return 1;</span><br><span class="line">v5 = 0;</span><br><span class="line">while ( byte_40A030[v5] == *(v5 + a1) )</span><br><span class="line">&#123;</span><br><span class="line">  v5 = ++v4;</span><br><span class="line">  if ( v4 &gt;= a2 )</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br><span class="line">return 0;</span><br></pre></td></tr></table></figure>
+
+<p>写解题脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">flag=<span class="built_in">list</span>(<span class="string">&quot;fffffffffffffffffff&quot;</span>)</span><br><span class="line">s1=[<span class="number">0x61</span>, <span class="number">0x6A</span>, <span class="number">0x79</span>, <span class="number">0x67</span>, <span class="number">0x6B</span>, <span class="number">0x46</span>, <span class="number">0x6D</span>, <span class="number">0x2E</span>, <span class="number">0x7F</span>, <span class="number">0x5F</span>, <span class="number">0x7E</span>, <span class="number">0x2D</span>, <span class="number">0x53</span>, <span class="number">0x56</span>, <span class="number">0x7B</span>, <span class="number">0x38</span>, <span class="number">0x6D</span>, <span class="number">0x4C</span>, <span class="number">0x6E</span>]</span><br><span class="line">flag[<span class="number">18</span>]=<span class="built_in">chr</span>(s1[<span class="number">18</span>]^<span class="number">19</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">18</span>):</span><br><span class="line">    v3=s1[i]^i</span><br><span class="line">    <span class="keyword">if</span>(i%<span class="number">2</span>==<span class="number">1</span>):</span><br><span class="line">        flag[i]=<span class="built_in">chr</span>(v3+i)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        flag[i+<span class="number">2</span>]=<span class="built_in">chr</span>(v3)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(flag))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;Ho0k_w1th_Fun&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="反思"><a href="#反思" class="headerlink" title="反思"></a>反思</h1><p>这种“简单题”其实写了我蛮久的，但我之前确实没有接触过API和hook题，第一次见也算是积攒经验了。其实这道题继续往后看，可以发现CreateFileA-&gt;WriteFile(ipAddress中的地址)&#x2F;sub_401080-&gt;sub_401240。所以最后都会访问到sub_401240这个hook函数。之后上网搜了一下wp来解释这个函数。</p>
+<p>在这个函数中，由于在目标函数中赋值，nNumberOfBytesToWrite无论怎么操作，最后都会使程序输出you flag is right!</p>
+<p>改为动调跟进循环。其实直接F5就能看到目标函数，疑惑了。这个循环运行第一次就退出来了，但是依旧输出you flag is right!</p>
+<p>从一个.cpp文件变成.exe文件经过了预处理、编译、汇编、链接。</p>
+<p>钩子函数：钩子函数是在一个事件触发的时候，在系统中捕获到他，然后做一些操作。是一段用于处理系统消息的程序。“钩子”这个意思就是在某个阶段给你一个做某些处理的机会。它是一个函数，在系统消息触发时被系统调用；且不是用户自己触发的。</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">MaoMao</a></p><p> <span>Link:  </span><a href="http://example.com/2023/03/18/EASYHOOK-WP/">http://example.com/2023/03/18/EASYHOOK-WP/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2023/03/18/WINDOWS%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/" title="WINDOWS编程基础"><span>< PreviousPost</span><br><span class="prevTitle">WINDOWS编程基础</span></a><a class="nextSlogan" href="/2023/03/10/buuctf-reverse-wp/" title="buuctf_reverse_wp"><span>NextPost ></span><br><span class="nextTitle">buuctf_reverse_wp</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#EASYHOOK-wp"><span class="toc-number">1.</span> <span class="toc-text">EASYHOOK_wp</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E6%80%9D"><span class="toc-number">2.</span> <span class="toc-text">反思</span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
