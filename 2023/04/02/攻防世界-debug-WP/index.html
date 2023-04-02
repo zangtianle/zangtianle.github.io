@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="MaoMao"><meta name="renderer" content="webkit"><meta name="copyright" content="MaoMao"><meta name="keywords" content="MaoMao's Blog"><meta name="description" content="A cat's blog"><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>攻防世界——debug_WP · MaoMao's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="MaoMao's Blog" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">MaoMao</div><div class="profile-signature">cat???</div><div class="friends"><div>FRIENDS</div><span><a href="eutop1a.github.io" target="_black">friendA</a></span><span><a href="http://tsingshui.me/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">MaoMao's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">攻防世界——debug_WP</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2023-04-02</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="学习记录"> 学习记录</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="攻防世界——debug"><a href="#攻防世界——debug" class="headerlink" title="攻防世界——debug"></a>攻防世界——debug</h1><p>PE32无壳。用IDA打开，一整个呆住，后来搜了一下，这是**.net文件调试不能用IDA<strong>。连夜去下载</strong>Dnspy**</p>
+<p><img src="/pic/202304021.png" alt="ida"></p>
+<p>用Dnspy打开找到主函数。没学过C#和java，所以这个根本看不懂，想到了题目为debug，所以果断尝试动调。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">private static void ᜀ(string[] A_0)</span><br><span class="line">&#123;</span><br><span class="line">	string b = null;</span><br><span class="line">	string value = string.Format(&quot;&#123;0&#125;&quot;, DateTime.Now.Hour + 1);</span><br><span class="line">	string a_ = &quot;CreateByTenshine&quot;;</span><br><span class="line">	.(a_, Convert.ToInt32(value), ref b);</span><br><span class="line">	string a = Console.ReadLine();//从控制台读取输入</span><br><span class="line">	if (a == b)</span><br><span class="line">	&#123;</span><br><span class="line">		Console.WriteLine(&quot;u got it!&quot;);</span><br><span class="line">		Console.ReadKey(true);</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		Console.Write(&quot;wrong&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	Console.ReadKey(true);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动调"><a href="#动调" class="headerlink" title="动调"></a>动调</h2><p>因为在if判断后输出结果，所以只需查看a,b的值即可，在此处下断点调试</p>
+<p><img src="/pic/202304022.png" alt="debug"></p>
+<p>可以看到b中直接出现了flag</p>
+<p><img src="/pic/202304023.png" alt="flag"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;967DDDFBCD32C1F53527C221D9E40A0B&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><p>之后问了学长，给出了逆向的思路（虽然也不是很懂，但是先记下来）。</p>
+<p>首先分析第一句</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">string value = string.Format(&quot;&#123;0&#125;&quot;, DateTime.Now.Hour + 1);</span><br></pre></td></tr></table></figure>
+
+<p>DataTime.Now——获取当前的时间；.Hour——获取当前小时；其次+1，并将值赋给value.</p>
+<p>然后调用class0下的成员函数smethod_2，传入a_，然后把value转换成int32</p>
+<p><img src="/pic/202304024.jpg" alt="smethod_2"></p>
+<p>然后这个smethod_2，中间调用了smethod_0函数，跟进。smethod_0就是指数数组加密，然后smethod_1是加上flag{}还有对中间的字符进行MD5加密</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">private static void ᜀ(string A_0, int A_1, ref string A_2)</span><br><span class="line">&#123;</span><br><span class="line">	int num = 0;</span><br><span class="line">	if (0 &lt; A_0.Length)</span><br><span class="line">	&#123;</span><br><span class="line">		do</span><br><span class="line">		&#123;</span><br><span class="line">			char c = A_0[num];</span><br><span class="line">			int num2 = 1;</span><br><span class="line">			do</span><br><span class="line">			&#123;</span><br><span class="line">				c = Convert.ToChar(ᜅ.ᜀ(Convert.ToInt32(c), num2));</span><br><span class="line">				num2++;</span><br><span class="line">			&#125;</span><br><span class="line">			while (num2 &lt; 15);</span><br><span class="line">			A_2 += c;</span><br><span class="line">			num++;</span><br><span class="line">		&#125;</span><br><span class="line">		while (num &lt; A_0.Length);</span><br><span class="line">	&#125;</span><br><span class="line">	A_2 = ᜅ.ᜀ(A_2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">private static string ᜀ(string A_0)</span><br><span class="line">&#123;</span><br><span class="line">	byte[] bytes = Encoding.ASCII.GetBytes(A_0);</span><br><span class="line">	return &quot;flag&#123;&quot; + BitConverter.ToString(new MD5CryptoServiceProvider().ComputeHash(bytes)).Replace(&quot;-&quot;, &quot;&quot;) + &quot;&#125;&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">private static int ᜀ(int A_0, int A_1)</span><br><span class="line">&#123;</span><br><span class="line">	return (new int[]</span><br><span class="line">	&#123;</span><br><span class="line">		2,</span><br><span class="line">		3,</span><br><span class="line">		5,</span><br><span class="line">		7,</span><br><span class="line">		11,</span><br><span class="line">		13,</span><br><span class="line">		17,</span><br><span class="line">		19,</span><br><span class="line">		23,</span><br><span class="line">		29,</span><br><span class="line">		31,</span><br><span class="line">		37,</span><br><span class="line">		41,</span><br><span class="line">		43,</span><br><span class="line">		47,</span><br><span class="line">		53,</span><br><span class="line">		59,</span><br><span class="line">		61,</span><br><span class="line">		67,</span><br><span class="line">		71,</span><br><span class="line">		73,</span><br><span class="line">		79,</span><br><span class="line">		83,</span><br><span class="line">		89,</span><br><span class="line">		97,</span><br><span class="line">		101,</span><br><span class="line">		103,</span><br><span class="line">		107,</span><br><span class="line">		109,</span><br><span class="line">		113</span><br><span class="line">	&#125;)[A_1] ^ A_0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后发现我的dnSpy显示界面跟学长显示的不一样，我的函数没有显示出来，所以只能动调。虽然代码显示有问题，但我还是把各个对于函数找到了，然后写一下解题脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line">key=[<span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">23</span>, <span class="number">29</span>, <span class="number">31</span>, <span class="number">37</span>, <span class="number">41</span>, <span class="number">43</span>, <span class="number">47</span>]</span><br><span class="line">s=<span class="string">&quot;CreateByTenshine&quot;</span></span><br><span class="line">flag=<span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> key:</span><br><span class="line">		i=<span class="built_in">chr</span>(n^<span class="built_in">ord</span>(i))</span><br><span class="line">	flag+=i</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;flag&#123;&quot;</span>+hashlib.md5(flag.encode()).hexdigest()+<span class="string">&quot;&#125;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;967dddfbcd32c1f53527c221d9e40a0b&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="关于-net-and-C"><a href="#关于-net-and-C" class="headerlink" title="关于.net and C#"></a>关于.net and C#</h1><p><strong>在这直接引用搜到的一段话：</strong></p>
+<p>众所周知，C#语言是对JAVA语言系统的升华。汇集JAVA面向对象的思想，同时也将微软传统MSVC&#x2F;VC++的优点发挥的淋漓尽致。跟JAVA类似，C#也是一种解释型语言，编译完同样会生成字节码文件，在程序运行时，借助它自己的解释器进行实时解释运行。C#的字节码中间语言称为IL语言，其解释器一般是指CLR，类比于JAVA的JVM。当然，C#的解释器不限于CLR，现阶段开源软件Mono也实现了一个C#解释器。而且，Mono不仅能运行在Windows上，还能运行在Linux上。不过Mono本来就是为了在Linux上运行.NET C#。</p>
+<p>C#使用csc进行编译，编译生成的可执行文件也是exe格式文件。但不同于C&#x2F;C++编译出来的程序，使用dumpbin反编译C#的exe文件，并不能帮助我们分析程序。因为C#语言系统在C&#x2F;C++之上又抽象了一层，.text代码段虽然还能解析出部分C语言代码段，但主体逻辑都存储在IL中。所以，我们需要工具进一步来分析exe文件中的IL代码块。然后进一步解析出C#源码。</p>
+<h2 id="net-C-逆向工具"><a href="#net-C-逆向工具" class="headerlink" title=".net C#逆向工具"></a>.net C#逆向工具</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ildasm</td>
+<td>将从exe提取出IL代码</td>
+</tr>
+<tr>
+<td>ilasm</td>
+<td>将IL代码编译成exe可执行文件</td>
+</tr>
+<tr>
+<td>dotpeek</td>
+<td>Jetbrains家族的用于反编译C#程序的工具，也可反编译为IL</td>
+</tr>
+<tr>
+<td>dnSpy</td>
+<td>顶中顶</td>
+</tr>
+</tbody></table>
+<p><img src="/pic/202304025.png" alt="img"></p>
+<h2 id="ILSPY和dnSPY的对比"><a href="#ILSPY和dnSPY的对比" class="headerlink" title="ILSPY和dnSPY的对比"></a>ILSPY和dnSPY的对比</h2><p>ILSPY更偏向静态分析，而dnSPY更偏向动态调试</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">MaoMao</a></p><p> <span>Link:  </span><a href="http://example.com/2023/04/02/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C-debug-WP/">http://example.com/2023/04/02/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C-debug-WP/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2023/03/25/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C-babymips-WP/" title="攻防世界_babymips_WP"><span>NextPost ></span><br><span class="nextTitle">攻防世界_babymips_WP</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%E2%80%94%E2%80%94debug"><span class="toc-number">1.</span> <span class="toc-text">攻防世界——debug</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E8%B0%83"><span class="toc-number">1.1.</span> <span class="toc-text">动调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%86%E5%90%91"><span class="toc-number">1.2.</span> <span class="toc-text">逆向</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E-net-and-C"><span class="toc-number">2.</span> <span class="toc-text">关于.net and C#</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#net-C-%E9%80%86%E5%90%91%E5%B7%A5%E5%85%B7"><span class="toc-number">2.1.</span> <span class="toc-text">.net C#逆向工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ILSPY%E5%92%8CdnSPY%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">2.2.</span> <span class="toc-text">ILSPY和dnSPY的对比</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
